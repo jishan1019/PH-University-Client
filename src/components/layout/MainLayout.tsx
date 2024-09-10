@@ -5,6 +5,7 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { createElement } from "react";
+import { Outlet } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 
 const items = [
@@ -20,7 +21,7 @@ const items = [
 
 export default function MainLayout() {
   return (
-    <Layout>
+    <Layout style={{ height: "100vh" }}>
       <Sider
         breakpoint="lg"
         collapsedWidth="0"
@@ -31,7 +32,18 @@ export default function MainLayout() {
           console.log(collapsed, type);
         }}
       >
-        <div className="demo-logo-vertical" />
+        <div
+          style={{
+            color: "white",
+            textAlign: "center",
+            height: "4rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h1>PH Uni</h1>
+        </div>
         <Menu
           theme="dark"
           mode="inline"
@@ -48,7 +60,7 @@ export default function MainLayout() {
               minHeight: 360,
             }}
           >
-            content
+            <Outlet />
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
