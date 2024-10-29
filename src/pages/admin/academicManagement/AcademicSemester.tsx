@@ -1,22 +1,23 @@
-import React from "react";
-import { useGetAllSemestersQuery } from "../../../redux/features/admin/academicManagement.api";
 import { Button, Table, TableColumnsType, TableProps } from "antd";
+import { useGetAllSemestersQuery } from "../../../redux/features/admin/academicManagement.api";
 import { TAcademicSemester } from "../../../types/academicManagement.type";
-
-interface DataType {
-  key: React.Key;
-  name: string;
-  age: number;
-  address: string;
-}
+import { useState } from "react";
+import { TQueryParam } from "../../../types";
 
 export type TTableData = Pick<
   TAcademicSemester,
   "name" | "year" | "startMonth" | "endMonth"
 >;
 
-export default function AcademicSemester() {
-  const { data: semesterData } = useGetAllSemestersQuery(undefined);
+const AcademicSemester = () => {
+  const [params, setParams] = useState<TQueryParam[] | undefined>(undefined);
+  const {
+    data: semesterData,
+    isLoading,
+    isFetching,
+  } = useGetAllSemestersQuery(params);
+
+  console.log({ isLoading, isFetching });
 
   const tableData = semesterData?.data?.map(
     ({ _id, name, startMonth, endMonth, year }) => ({
@@ -90,21 +91,35 @@ export default function AcademicSemester() {
     },
   ];
 
-  const onChange: TableProps<DataType>["onChange"] = (
-    pagination,
+  const onChange: TableProps<TTableData>["onChange"] = (
+    _pagination,
     filters,
-    sorter,
+    _sorter,
     extra
   ) => {
-    console.log("params", pagination, filters, sorter, extra);
+    if (extra.action === "filter") {
+      const queryParams: TQueryParam[] = [];
+
+      filters.name?.forEach((item) =>
+        queryParams.push({ name: "name", value: item })
+      );
+
+      filters.year?.forEach((item) =>
+        queryParams.push({ name: "year", value: item })
+      );
+
+      setParams(queryParams);
+    }
   };
 
   return (
-    <Table<DataType>
+    <Table
+      loading={isFetching}
       columns={columns}
       dataSource={tableData}
       onChange={onChange}
-      showSorterTooltip={{ target: "sorter-icon" }}
     />
   );
-}
+};
+
+export default AcademicSemester;
