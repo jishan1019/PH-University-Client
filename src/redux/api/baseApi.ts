@@ -1,9 +1,9 @@
 import {
   BaseQueryApi,
   BaseQueryFn,
-  createApi,
   DefinitionType,
   FetchArgs,
+  createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
@@ -14,10 +14,12 @@ const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:5000/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState)?.auth?.token;
+    const token = (getState() as RootState).auth.token;
+
     if (token) {
-      headers.set("authorization", `Bearer ${token}`);
+      headers.set("authorization", `${token}`);
     }
+
     return headers;
   },
 });
@@ -30,9 +32,8 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 404) {
-    toast.error("User not found");
+    toast.error(result.error.data.message);
   }
-
   if (result?.error?.status === 401) {
     //* Send Refresh
     console.log("Sending refresh token");
@@ -66,6 +67,5 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
-
   endpoints: () => ({}),
 });
