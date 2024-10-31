@@ -67,6 +67,7 @@ export const adminPaths = [
         element: <StudentData />,
       },
       {
+        name: "Students Details",
         path: "student-data/:studentId",
         element: <StudentDetails />,
       },
