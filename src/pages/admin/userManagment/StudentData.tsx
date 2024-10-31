@@ -17,6 +17,8 @@ export type TTableData = Pick<
 >;
 
 const StudentData = () => {
+  // module continue after 32-9
+
   const [params, setParams] = useState<TQueryParam[]>([]);
   const [page, setPage] = useState(1);
   const {
